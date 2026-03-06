@@ -2,7 +2,13 @@
 
 ## x) Read/watch/listen and summarize
 
-TBD
+€ Schneier 2015: Applied Cryptography, 20ed
+* **1.1 Terminology ("Historical Terms" to the end).** "Historically, a code refers to  cryptosystem that deals with linguistic units: words, phrases, sentences, and so forth." (Schneier 2015) He also mentions, "Codes are only useful for specialized circumstances. Ciphers are useful for any circumstance."
+* **1.4 Simple XOR.** Actually I know this operation long time ago and I know how it works in encryption and decryption. One thing I learn from this chapter is that XOR is highly insecure when used with a short, repeating key because it preserves the underlying statistical patterns of the language (such as the frequency of specific letters). Schneier suggests the key beng used to be truly random, at least as long as the message itself, and never reused, to achieves perfect, unbreakable security.
+* **1.7 Large Numbers.** In this section, by comparing large numbers used in keys to physical realities of the universe, Schneier explains that while a 128-bit or 256-bit key may seem small numerically, the total number of possible combinations is so vast that "brute-force" attacks (trying every possible key) are impossible by the fundamental laws of physics rather than just current technology. Schneier establishes that a well-designed modern cryptography is effectively unbreakable by raw calculation alone.
+
+Karvinen 2024: [Python Basics for Hackers](https://terokarvinen.com/python-for-hackers/)
+* Even though, Tero's guide is well writen and pretty detailed, but in my opinion, that is not enough to program the algorithms to decrypt ciphertexts. From my own experience, when dealing with a new programming language, not only we have to know the syntax, but we also have to research the libraries that we can use and the ecosystem around them. That's why in this homework, besides searching for how to program with Python on the Internet and using Tero's guide, especially how to use iPython, to practice, I have to use AI a lot to help me explain the syntax and usages of each function, as I'm just a beginner in this language.
 
 ## 1. Convert hex to base64
 
@@ -139,3 +145,6 @@ Play that funky music
 
 
 ```
+
+## References
+* Schneier, B. 2015. Applied Cryptography: Protocols, Algorithms and Source Code in C. 20th Anniversary Edition. Wiley.
