@@ -11,7 +11,10 @@ def find_keysize(raw: bytes, max_keysize = 40):
         # Based on instructions, we should add [:4] at the end.
         # However, it seems 4 sammples are not enough to find the key size.
         # So I suggest using all the samples that can be calculated instead
-        chunks = [raw[i:i+size] for i in range(0, len(raw), size)]#[:4]
+        # We also truncate the raw data to be a multiple of size to ensure fair 
+        # comparison and avoid zip() dropping bytes silently on the last chunk.
+        limit = (len(raw) // size) * size
+        chunks = [raw[i:i+size] for i in range(0, limit, size)]#[:4]
         if len(chunks) < 2:
             continue
             
