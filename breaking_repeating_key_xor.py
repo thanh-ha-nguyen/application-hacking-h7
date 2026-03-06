@@ -1,26 +1,30 @@
 import base64
 
 def hamming_distance(raw1: bytes, raw2: bytes):
-    distance = 0
-    for i in range(len(raw1)):
-        raw1_bits = format(raw1[i], '08b')
-        raw2_bits = format(raw2[i], '08b')
-        for j in range(len(raw1_bits)):
-            if raw1_bits[j] != raw2_bits[j]:
-                distance += 1
-    return distance
+    return sum(bin(b1 ^ b2).count('1') for b1, b2 in zip(raw1, raw2))
 
 def find_keysize(raw: bytes, max_keysize = 40):
-    value = max_keysize * 8
+    value = float('inf')
     keysize = 0
     for size in range(2, max_keysize + 1):
-        sample1 = raw[:size]
-        sample2 = raw[size:size*2]
-        nornalized_distance = hamming_distance(sample1, sample2) / size        
-        if nornalized_distance < value:
-            value = nornalized_distance
+        distances = []
+        # Based on instructions, we should add [:4] at the end.
+        # However, it seems 4 sammples are not enough to find the key size.
+        # So I suggest using all the samples that can be calculated instead
+        chunks = [raw[i:i+size] for i in range(0, len(raw), size)]#[:4]
+        if len(chunks) < 2:
+            continue
+            
+        for i in range(len(chunks) - 1):
+            distances.append(hamming_distance(chunks[i], chunks[i+1]) / size)
+            
+        avg_distance = sum(distances) / len(distances)
+        
+        if avg_distance < value:
+            value = avg_distance
             keysize = size    
-    print(f"keysize={keysize} value={value}")
+
+    # print(f"keysize={keysize} value={value}")
     return keysize
 
 def score(plaintext: str):
@@ -45,12 +49,8 @@ def detect_single_byte_xor(raw: bytes):
 def find_key(raw: bytes, keysize: int):
     key_bytes = []
     for j in range(keysize):
-        block = []
-        for i in range(0, len(raw) // keysize + 1):
-            if i + j * keysize < len(raw):
-                block.append(raw[i + j])        
-        key_bytes.append(detect_single_byte_xor(bytes(block)))
-    print(f"key={bytes(key_bytes).decode()}")
+        block = raw[j::keysize]
+        key_bytes.append(detect_single_byte_xor(block))
     return bytes(key_bytes)
     
 def repeating_key_xor(p: bytes, k: bytes):
@@ -126,10 +126,7 @@ Jk8DCkkcC3hFMQIEC0EbAVIqCFZBO1IdBgZUVA4QTgUWSR4QJwwRTWM=
     
     b64_dec = base64.b64decode(input_str)
     
-    print(hamming_distance(bytes('this is a test', 'ascii'), bytes('wokka wokka!!!', 'ascii')))
     keysize = find_keysize(b64_dec)
     key = find_key(b64_dec, keysize)
-    print(f"key={key}")
     plaintext = repeating_key_xor(b64_dec, key)
     print(plaintext.decode())
-    
