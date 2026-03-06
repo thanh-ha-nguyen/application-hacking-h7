@@ -24,12 +24,11 @@ def find_keysize(raw: bytes, max_keysize = 40):
             value = avg_distance
             keysize = size    
 
-    # print(f"keysize={keysize} value={value}")
     return keysize
 
-def score(plaintext: str):
+def score(plaintext: bytes):
     s = 0
-    common = "ETAOINSHRDLU etaoinshrdlu"
+    common = bytes("ETAOINSHRDLU etaoinshrdlu", 'ascii')
     for c in plaintext:
         if c in common:
             s += 1            
@@ -39,19 +38,14 @@ def detect_single_byte_xor(raw: bytes):
     max_score = 0
     single_byte = 0
     for i in range(256):
-        p = "".join([chr(b ^ i) for b in raw])
-        s = score(p)
+        s = score([b ^ i for b in raw])
         if s > max_score:
             max_score = s
             single_byte = i   
     return single_byte
 
 def find_key(raw: bytes, keysize: int):
-    key_bytes = []
-    for j in range(keysize):
-        block = raw[j::keysize]
-        key_bytes.append(detect_single_byte_xor(block))
-    return bytes(key_bytes)
+    return [detect_single_byte_xor(raw[j::keysize]) for j in range(keysize)]
     
 def repeating_key_xor(p: bytes, k: bytes):
     return bytes([b1 ^ b2 for b1, b2 in zip(p, k * (len(p) // len(k) + 1))])
