@@ -62,7 +62,7 @@ $ python3 repeating_key_xor.py
 ## 6. Break repeating-key XOR
 
 ```shell
-$ python3 breaking_repeating_key_xor.py
+$ cat cryptopals/set1/6.txt | base64 -d | python3 breaking_repeating_key_xor.py
 I'm back and I'm ringin' the bell 
 A rockin' on the mike while the fly girls yell 
 In ecstasy in the back of me 
